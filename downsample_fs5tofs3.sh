@@ -11,10 +11,9 @@ OUTDIR="$2"
 
 mkdir -p "$OUTDIR"
 
-# Adjust this to the right path for your FreeSurfer subjects
-export SUBJECTS_DIR=/var/datasets/freesurfer   # <- CHANGE if different
+export SUBJECTS_DIR=/var/datasets/freesurfer  
 
-# Count subjects (skip header)
+# Count subjects 
 TOTAL=$(( $(wc -l < "$CSV") - 1 ))
 if [ "$TOTAL" -le 0 ]; then
   echo "No data rows found in $CSV" >&2
@@ -25,15 +24,9 @@ echo "[$(date)] Starting fsaverage5 -> fsaverage3 downsampling for $TOTAL subjec
 
 i=0
 
-# Assumes header row exists; adjust cut -d, -fN to your CSV columns
-# Example columns:
-#   1: subject_id
-#   2: path_fs5_L
-#   3: path_fs5_R
 tail -n +2 "$CSV" | while IFS=, read -r subj path_L_fs5 path_R_fs5 _rest; do
   i=$((i+1))
 
-  # Basic sanity checks
   if [ -z "$subj" ]; then
     echo "Row $i has empty subject_id, skipping" >&2
     continue
